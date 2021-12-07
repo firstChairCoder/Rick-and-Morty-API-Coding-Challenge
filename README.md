@@ -1,3 +1,3 @@
-# Community Template Repo
+# Basic React Native client side app
 
-Template repo with docs and GitHub Actions etc, to create other projects.
+A small app demonstrating the usage of fetch API and interaction with a RESTful API in React Native
