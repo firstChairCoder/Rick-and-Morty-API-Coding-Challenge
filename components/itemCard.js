@@ -1,37 +1,46 @@
 //import liraries
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image} from "react-native";
 
 import colors from "../assets/colors/colors";
+import Row from "./itemRow";
 
 // create a component
-const Card = ({name}) => {
+const Card = ({
+  display,
+  name,
+  species,
+  gender,
+  status,
+  location,
+  origin,
+  episodes,
+}) => {
   return (
-    <View style={styles.imageWrapper} key={item.id}>
+    <View style={styles.imageWrapper}>
       <Image
         style={styles.image}
         source={{
-          uri: `${item.image}`,
+          uri: `${ display }`,
         }}
       />
-      <Text style={styles.name}>{item.name}</Text>
+      <Text style={styles.name}>{name}</Text>
+      <Row title={"Species"} value={species} />
 
-      <Row title={"Species"} value={item.species} />
+      <Row title={"Gender"} value={gender} />
 
-      <Row title={"Gender"} value={item.gender} />
+      <Row title={"Status"} value={status} />
 
-      <Row title={"Status"} value={item.status} />
-
-      <Row title={"Location"} value={item.location.name} />
+      <Row title={"Location"} value={location} />
       {/* chars.location.name */}
 
-      <Row title={"Origin"} value={item.origin.name} />
+      <Row title={"Origin"} value={origin} />
       {/* chars.origin.name */}
 
       <View style={styles.wrapper}>
         <Text style={styles.title}>Episodes</Text>
         <View style={styles.numWrapper}>
-          <Text style={styles.value}>{item.episode.length}</Text>
+          <Text style={styles.value}>{episodes}</Text>
           {/* chars.episode.length */}
         </View>
       </View>
@@ -41,11 +50,52 @@ const Card = ({name}) => {
 
 // define your styles
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
+  imageWrapper: {
+    width: 250,
+    borderColor: colors.black,
+    borderWidth: 1,
     alignItems: "center",
-    backgroundColor: "#2c3e50",
+    paddingBottom: 15,
+  },
+  image: {
+    width: 250,
+    height: 250,
+    resizeMode: "cover",
+  },
+  name: {
+    fontSize: 18,
+    color: colors.white,
+    margin: 10,
+    marginHorizontal: 25,
+    alignSelf: "flex-start",
+  },
+  numWrapper: {
+    width: 40,
+    height: 28,
+    backgroundColor: "#0062CC",
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  wrapper: {
+    width: 200,
+    height: 50,
+    borderWidth: 1,
+    borderColor: colors.black,
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  title: {
+    color: colors.white,
+    fontSize: 16,
+  },
+  value: {
+    color: colors.white,
+    fontSize: 16,
+  },
+  loading: {
+    marginVertical: 20,
   },
 });
 

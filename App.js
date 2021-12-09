@@ -179,110 +179,136 @@
 // //   );
 // // }
 
-//import liraries
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, StatusBar, FlatList, ActivityIndicator, useWindowDimensions, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  StatusBar,
+  FlatList,
+  ActivityIndicator,
+  useWindowDimensions,
+  Pressable,
+  TextInput
+} from "react-native";
 
 import colors from "./assets/colors/colors";
-import Row from "./components/itemRow";
+import Card from "./components/itemCard";
 
 // create a component
 const App = () => {
-  const [chars, setChars] = useState([]);
-  const [info, setInfo] = useState([])
+  const [data, setData] = useState([]);
+  const [info, setInfo] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [searchField, setSearchField] = useState("");
 
-  const height = useWindowDimensions().height
+  const height = useWindowDimensions().height;
 
   useEffect(() => {
     fetchChars();
-  }, []);
+  }, [page]);
 
   const fetchChars = () => {
-    fetch("https://rickandmortyapi.com/api/character")
+    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
       .then((response) => response.json())
-      .then((chars) => setChars(chars.results))
+      // .then((res) => setData([...data, ...res.results]))
+      .then((res) => setData(res.results))
       // .then((chars) => setInfo(chars.info.next))
       .finally(() => {
         setLoading(false);
-        console.log(chars)
       });
   };
 
-  // const nextPageHandler = () => {
-  //   fetch(`${info.next}`)
-  //     .then((response) => response.json())
-  //     .then((chars) => setChars(chars.results))
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  
+  const renderRow = ({ item }) => {
+    return (
+      <Card
+        display={item.image}
+        name={item.name}
+        species={item.species}
+        gender={item.gender}
+        status={item.status}
+        location={item.location?.name}
+        origin={item.origin?.name}
+        episodes={`${item.episode?.length}`}
+      />
+    );
+  };
 
-  return (
+  const handleLoadMore = () => {
+    setPage(page + 1);
+    console.log(page);
+  };
+
+  const prevPage = () => {
+    setPage(page - 1);
+    console.log(page);
+  };
+
+  const nextPage = () => {
+    setPage(page + 1);
+    console.log(page);
+  };
+
+  return loading ? (
+    <View style={styles.loading}>
+      <ActivityIndicator size="large" color={"white"} />
+    </View>
+  ) : (
     <View style={styles.container}>
       <StatusBar barStyle={"light-content"} />
-      <FlatList
-        data={chars}
-        initialNumToRender={10}
-        renderItem={({item, i}) => {
-          return (
-            <View
-        style={styles.imageWrapper}
-        key={item.id}
-      >
-        <Image
-          style={styles.image}
-          source={{
-            uri: `${item.image}`,
-          }}
+      <View style={styles.searchWrapper}>
+        <TextInput
+          style={styles.searchfield}
+          placeholder="Enter name"
+          onChangeText={(value) => setSearchField(value)}
+          value={searchField}
         />
-        <Text
-          style={styles.name}
-        >
-          {item.name}
-        </Text>
-
-        <Row title={"Species"} value={item.species} />
-
-        <Row title={"Gender"} value={item.gender} />
-
-        <Row title={"Status"} value={item.status} />
-
-        <Row title={"Location"} value={item.location.name} />
-        {/* chars.location.name */}
-
-        <Row title={"Origin"} value={item.origin.name} />
-        {/* chars.origin.name */}
-
-
-        <View style={styles.wrapper}>
-          <Text style={styles.title}>Episodes</Text>
-          <View style={styles.numWrapper}>
-            <Text style={styles.value}>{item.episode.length}</Text>
-            {/* chars.episode.length */}
-          </View>
-        </View>
       </View>
-          )
-        }}
-        ListEmptyComponent={() => {
-          if (loading) {
-            return (
-              <View style={styles.loading}>
-                <ActivityIndicator size="large" color={"white"} />
-              </View>
-            );
-          }
 
-          return null;
-        }}
-        // snapToInterval={height - 30}
-        // snapToAlignment={"center"}
-        // decelerationRate={"normal"}
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderRow}
+        // onEndReached={handleLoadMore}
+        // onEndReachedThreshold={0}
+        // ListFooterComponent={() => (
+        //   <View style={{ marginTop: 10, alignItems: "center" }}>
+        //     <ActivityIndicator size={24} color={colors.yellow} />
+        //   </View>
+        // )}
       />
-      <Pressable style={{alignItems: "center", justifyContent: "center", height: 80, width: 80, borderRadius: 20, backgroundColor: colors.primary}} onPress={() => console.warn("Next!")}>
-        <Text style={{color: colors.white}}>Next</Text>
-      </Pressable>
+
+      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <Pressable
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: 40,
+            width: 40,
+            borderRadius: 10,
+            marginRight: 40,
+            backgroundColor: colors.yellow,
+          }}
+          onPress={prevPage}
+        >
+          <Text style={{ color: colors.white }}>Back</Text>
+        </Pressable>
+        <Pressable
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: 40,
+            width: 40,
+            borderRadius: 10,
+            backgroundColor: colors.primary,
+          }}
+          onPress={nextPage}
+        >
+          <Text style={{ color: colors.white }}>Next</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -294,6 +320,21 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     alignItems: "center",
     backgroundColor: "#333",
+  },
+  searchfield: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#000",
+    textAlign: "center",
+    width: 250,
+    borderRadius: 50,
+  },
+  searchWrapper: {
+    position: 'absolute',
+    marginBottom: 70,
+    left: '20%',
+    zIndex: 1,
+    marginTop: 10,
   },
   imageWrapper: {
     width: 250,
@@ -346,3 +387,47 @@ const styles = StyleSheet.create({
 
 //make this component available to the app
 export default App;
+
+//import liraries
+// import React, { Component, useState } from 'react';
+// import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+
+// // create a component
+// const App = () => {
+//   const [num, setNum] = useState("")
+
+//   const changeHandler = (num) => {
+//     setNum(num)
+//     if (num > 2004) {
+//       Alert.alert("Something");
+//       setNum(null)
+//       console.log("error")
+//     } else  {
+//       setNum(num)
+//     }
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       <TextInput
+//       style={{width: 100, backgroundColor: "#059321"}}
+//       value={num}
+//       maxLength={4}
+//       onChangeText={changeHandler}
+//       />
+//     </View>
+//   );
+// };
+
+// // define your styles
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#fff',
+//   },
+// });
+
+// //make this component available to the app
+// export default App;
