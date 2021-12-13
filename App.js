@@ -190,130 +190,14 @@ import {
   ActivityIndicator,
   useWindowDimensions,
   Pressable,
-  TextInput
+  TextInput,
 } from "react-native";
+import _ from "lodash";
+import { SearchBar } from "react-native-elements";
 
 import colors from "./assets/colors/colors";
 import Card from "./components/itemCard";
 
-// create a component
-const App = () => {
-  const [data, setData] = useState([]);
-  const [info, setInfo] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [searchField, setSearchField] = useState("");
-
-  const height = useWindowDimensions().height;
-
-  useEffect(() => {
-    fetchChars();
-  }, [page]);
-
-  const fetchChars = () => {
-    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
-      .then((response) => response.json())
-      // .then((res) => setData([...data, ...res.results]))
-      .then((res) => setData(res.results))
-      // .then((chars) => setInfo(chars.info.next))
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  const renderRow = ({ item }) => {
-    return (
-      <Card
-        display={item.image}
-        name={item.name}
-        species={item.species}
-        gender={item.gender}
-        status={item.status}
-        location={item.location?.name}
-        origin={item.origin?.name}
-        episodes={`${item.episode?.length}`}
-      />
-    );
-  };
-
-  const handleLoadMore = () => {
-    setPage(page + 1);
-    console.log(page);
-  };
-
-  const prevPage = () => {
-    setPage(page - 1);
-    console.log(page);
-  };
-
-  const nextPage = () => {
-    setPage(page + 1);
-    console.log(page);
-  };
-
-  return loading ? (
-    <View style={styles.loading}>
-      <ActivityIndicator size="large" color={"white"} />
-    </View>
-  ) : (
-    <View style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
-      <View style={styles.searchWrapper}>
-        <TextInput
-          style={styles.searchfield}
-          placeholder="Enter name"
-          onChangeText={(value) => setSearchField(value)}
-          value={searchField}
-        />
-      </View>
-
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderRow}
-        // onEndReached={handleLoadMore}
-        // onEndReachedThreshold={0}
-        // ListFooterComponent={() => (
-        //   <View style={{ marginTop: 10, alignItems: "center" }}>
-        //     <ActivityIndicator size={24} color={colors.yellow} />
-        //   </View>
-        // )}
-      />
-
-      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-        <Pressable
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: 40,
-            width: 40,
-            borderRadius: 10,
-            marginRight: 40,
-            backgroundColor: colors.yellow,
-          }}
-          onPress={prevPage}
-        >
-          <Text style={{ color: colors.white }}>Back</Text>
-        </Pressable>
-        <Pressable
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: 40,
-            width: 40,
-            borderRadius: 10,
-            backgroundColor: colors.primary,
-          }}
-          onPress={nextPage}
-        >
-          <Text style={{ color: colors.white }}>Next</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-};
-
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -328,13 +212,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 250,
     borderRadius: 50,
+    backgroundColor: "#E8E4C9",
   },
   searchWrapper: {
-    position: 'absolute',
-    marginBottom: 70,
-    left: '20%',
-    zIndex: 1,
-    marginTop: 10,
+    margin: 10,
   },
   imageWrapper: {
     width: 250,
@@ -384,6 +265,149 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 });
+
+const App = () => {
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+
+  const height = useWindowDimensions().height;
+
+  useEffect(() => {
+    fetchChars();
+  }, [page]);
+
+  const fetchChars = () => {
+    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
+      .then((response) => response.json())
+      // .then((res) => setData([...data, ...res.results]))
+      .then((res) => {
+        setData(res.results);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  // const search = (query) => {
+  //   // const item.name = name
+  //   let text = query.toLowerCase();
+  //   let chars = data
+  //   let filteredChar = chars.filter((item) => {
+  //     return item.name.toLowerCase().match(text)
+  //   })
+
+  //   if (!text || text === "") {
+  //     setData(data)
+  //     } else if ()
+  //   return false;
+  // };
+
+  const renderRow = ({ item }) => {
+    return (
+      <Card
+        display={item.image}
+        name={item.name}
+        species={item.species}
+        gender={item.gender}
+        status={item.status}
+        location={item.location?.name}
+        origin={item.origin?.name}
+        episodes={`${item.episode?.length}`}
+      />
+    );
+  };
+
+  const handleSearch = (query) => {
+    // console.log("text", query);
+    setQuery(query);
+
+    let filteredData = data.filter(function (item) {
+      return item.name.includes(query);
+    });
+
+    setFilteredData(filteredData);
+  };
+
+  const handleLoadMore = () => {
+    setPage(page + 1);
+    // console.log(page);
+  };
+
+  const prevPage = () => {
+    setPage(page - 1);
+    // console.log(page);
+  };
+
+  const nextPage = () => {
+    setPage(page + 1);
+    // console.log(page);
+  };
+
+  return loading ? (
+    <View style={styles.loading}>
+      <ActivityIndicator size="large" color={"white"} />
+    </View>
+  ) : (
+    <View style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
+
+      <View style={styles.searchWrapper}>
+        <TextInput
+          style={styles.searchfield}
+          placeholder="Enter name"
+          onChangeText={handleSearch}
+          value={query}
+        />
+      </View>
+
+      <FlatList
+        data={filteredData && filteredData.length > 0 ? filteredData : data}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderRow}
+        // onEndReached={handleLoadMore}
+        // onEndReachedThreshold={0}
+        // ListFooterComponent={() => (
+        //   <View style={{ marginTop: 10, alignItems: "center" }}>
+        //     <ActivityIndicator size={24} color={colors.yellow} />
+        //   </View>
+        // )}
+      />
+
+      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <Pressable
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: 40,
+            width: 40,
+            borderRadius: 10,
+            marginRight: 40,
+            backgroundColor: colors.yellow,
+          }}
+          onPress={prevPage}
+        >
+          <Text style={{ color: colors.white }}>Back</Text>
+        </Pressable>
+        <Pressable
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: 40,
+            width: 40,
+            borderRadius: 10,
+            backgroundColor: colors.primary,
+          }}
+          onPress={nextPage}
+        >
+          <Text style={{ color: colors.white }}>Next</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+};
 
 //make this component available to the app
 export default App;
