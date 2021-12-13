@@ -280,9 +280,25 @@ const App = () => {
   }, [page]);
 
   const fetchChars = () => {
-    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
+    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`, query)
       .then((response) => response.json())
       // .then((res) => setData([...data, ...res.results]))
+      .then((res) => {
+        setData(res.results);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    console.log("API", query);
+    fetchFilteredChars();
+  }, [query]);
+
+  const fetchFilteredChars = () => {
+    fetch(`https://rickandmortyapi.com/api/character/?name=${query}`)
+      .then((response) => response.json())
       .then((res) => {
         setData(res.results);
       })
@@ -331,10 +347,10 @@ const App = () => {
     setFilteredData(filteredData);
   };
 
-  const handleLoadMore = () => {
-    setPage(page + 1);
-    // console.log(page);
-  };
+  // const handleLoadMore = () => {
+  //   setPage(page + 1);
+  //   // console.log(page);
+  // };
 
   const prevPage = () => {
     setPage(page - 1);
