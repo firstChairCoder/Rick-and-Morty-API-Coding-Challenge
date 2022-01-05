@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 // import { StatusBar } from "expo-status-bar";
 // import React, { useState } from "react";
 // import {
@@ -61,7 +62,7 @@
 //           }}
 //         >
 //           {categoriesData.map((item, index) => (
-//             <CategoryBtn id={item.id} title={item.text} />
+//             <CategoryBtn key={item.id} title={item.text} />
 //           ))}
 //         </View>
 
@@ -160,314 +161,287 @@
 //   },
 // });
 
-// // import React from "react";
-// // import { View, Text } from "react-native";
+// import React from "react";
+// import { View, Text } from "react-native";
 
-// // import CategoriesData from "./assets/data/categoriesData";
-// // const data = ['0','1','2','3','4','5','6'];
+// import CategoriesData from "./assets/data/categoriesData";
+// const data = ['0','1','2','3','4','5','6'];
 
-// // function titles() {
-// //   return data.map((item) => <Text>{item.text}</Text>);
-// // }
+// function titles() {
+//   return data.map((item) => <Text>{item.text}</Text>);
+// }
 
-// // export default function App() {
+// export default function App() {
 
-// //   return (
-// //     <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-// //       {titles()}
-// //     </View>
-// //   );
-// // }
+//   return (
+//     <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
+//       {titles()}
+//     </View>
+//   );
+// }
 
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  StatusBar,
-  FlatList,
-  ActivityIndicator,
-  useWindowDimensions,
-  Pressable,
-  TextInput,
-} from "react-native";
-import _ from "lodash";
-import { SearchBar } from "react-native-elements";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import colors from "./assets/colors/colors";
-import Card from "./components/itemCard";
+import Card from "./src/components/Card/ItemCard";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
-    alignItems: "center",
+    // paddingTop: 10,
+    // alignItems: "center",
     backgroundColor: "#333",
   },
-  searchfield: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#000",
-    textAlign: "center",
-    width: 250,
-    borderRadius: 50,
-    backgroundColor: "#E8E4C9",
-  },
-  searchWrapper: {
-    margin: 10,
-  },
-  imageWrapper: {
-    width: 250,
-    borderColor: colors.black,
-    borderWidth: 1,
-    alignItems: "center",
-    paddingBottom: 15,
-  },
-  image: {
-    width: 250,
-    height: 250,
-    resizeMode: "cover",
-  },
-  name: {
-    fontSize: 18,
-    color: colors.white,
-    margin: 10,
-    marginHorizontal: 25,
-    alignSelf: "flex-start",
-  },
-  numWrapper: {
-    width: 40,
-    height: 28,
-    backgroundColor: "#0062CC",
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  wrapper: {
-    width: 200,
-    height: 50,
-    borderWidth: 1,
-    borderColor: colors.black,
-    padding: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  title: {
-    color: colors.white,
-    fontSize: 16,
-  },
-  value: {
-    color: colors.white,
-    fontSize: 16,
-  },
-  loading: {
-    marginVertical: 20,
-  },
+
+  //   searchfield: {
+  //     height: 40,
+  //     borderWidth: 1,
+  //     borderColor: "#000",
+  //     textAlign: "center",
+  //     width: 250,
+  //     borderRadius: 50,
+  //     backgroundColor: "#E8E4C9",
+  //   },
+  //   searchWrapper: {
+  //     margin: 10,
+  //   },
+  //   imageWrapper: {
+  //     width: 250,
+  //     borderColor: colors.black,
+  //     borderWidth: 1,
+  //     alignItems: "center",
+  //     paddingBottom: 15,
+  //   },
+  //   image: {
+  //     width: 250,
+  //     height: 250,
+  //     resizeMode: "cover",
+  //   },
+  //   name: {
+  //     fontSize: 18,
+  //     color: colors.white,
+  //     margin: 10,
+  //     marginHorizontal: 25,
+  //     alignSelf: "flex-start",
+  //   },
+  //   numWrapper: {
+  //     width: 40,
+  //     height: 28,
+  //     backgroundColor: "#0062CC",
+  //     borderRadius: 12,
+  //     alignItems: "center",
+  //     justifyContent: "center",
+  //   },
+  //   wrapper: {
+  //     width: 200,
+  //     height: 50,
+  //     borderWidth: 1,
+  //     borderColor: colors.black,
+  //     padding: 10,
+  //     flexDirection: "row",
+  //     justifyContent: "space-between",
+  //   },
+  //   title: {
+  //     color: colors.white,
+  //     fontSize: 16,
+  //   },
+  //   value: {
+  //     color: colors.white,
+  //     fontSize: 16,
+  //   },
+  //   loading: {
+  //     marginVertical: 20,
+  //   },
 });
 
-const App = () => {
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
-
-  const height = useWindowDimensions().height;
-
-  useEffect(() => {
-    fetchChars();
-  }, [page]);
-
-  const fetchChars = () => {
-    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`, query)
-      .then((response) => response.json())
-      // .then((res) => setData([...data, ...res.results]))
-      .then((res) => {
-        setData(res.results);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    console.log("API", query);
-    fetchFilteredChars();
-  }, [query]);
-
-  const fetchFilteredChars = () => {
-    fetch(`https://rickandmortyapi.com/api/character/?name=${query}`)
-      .then((response) => response.json())
-      .then((res) => {
-        setData(res.results);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  // const search = (query) => {
-  //   // const item.name = name
-  //   let text = query.toLowerCase();
-  //   let chars = data
-  //   let filteredChar = chars.filter((item) => {
-  //     return item.name.toLowerCase().match(text)
-  //   })
-
-  //   if (!text || text === "") {
-  //     setData(data)
-  //     } else if ()
-  //   return false;
-  // };
-
-  const renderRow = ({ item }) => {
-    return (
-      <Card
-        display={item.image}
-        name={item.name}
-        species={item.species}
-        gender={item.gender}
-        status={item.status}
-        location={item.location?.name}
-        origin={item.origin?.name}
-        episodes={`${item.episode?.length}`}
-      />
-    );
-  };
-
-  const handleSearch = (query) => {
-    // console.log("text", query);
-    setQuery(query);
-
-    let filteredData = data.filter(function (item) {
-      return item.name.includes(query);
-    });
-
-    setFilteredData(filteredData);
-  };
-
-  // const handleLoadMore = () => {
-  //   setPage(page + 1);
-  //   // console.log(page);
-  // };
-
-  const prevPage = () => {
-    setPage(page - 1);
-    // console.log(page);
-  };
-
-  const nextPage = () => {
-    setPage(page + 1);
-    // console.log(page);
-  };
-
-  return loading ? (
-    <View style={styles.loading}>
-      <ActivityIndicator size="large" color={"white"} />
-    </View>
-  ) : (
-    <View style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
-
-      <View style={styles.searchWrapper}>
-        <TextInput
-          style={styles.searchfield}
-          placeholder="Enter name"
-          onChangeText={handleSearch}
-          value={query}
-        />
-      </View>
-
-      <FlatList
-        data={filteredData && filteredData.length > 0 ? filteredData : data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderRow}
-        // onEndReached={handleLoadMore}
-        // onEndReachedThreshold={0}
-        // ListFooterComponent={() => (
-        //   <View style={{ marginTop: 10, alignItems: "center" }}>
-        //     <ActivityIndicator size={24} color={colors.yellow} />
-        //   </View>
-        // )}
-      />
-
-      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-        <Pressable
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: 40,
-            width: 40,
-            borderRadius: 10,
-            marginRight: 40,
-            backgroundColor: colors.yellow,
-          }}
-          onPress={prevPage}
-        >
-          <Text style={{ color: colors.white }}>Back</Text>
-        </Pressable>
-        <Pressable
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: 40,
-            width: 40,
-            borderRadius: 10,
-            backgroundColor: colors.primary,
-          }}
-          onPress={nextPage}
-        >
-          <Text style={{ color: colors.white }}>Next</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-};
-
-//make this component available to the app
-export default App;
-
-//import liraries
-// import React, { Component, useState } from 'react';
-// import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
-
-// // create a component
 // const App = () => {
-//   const [num, setNum] = useState("")
+//   const [data, setData] = useState([]);
+//   const [filteredData, setFilteredData] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [page, setPage] = useState(1);
+//   const [query, setQuery] = useState("");
 
-//   const changeHandler = (num) => {
-//     setNum(num)
-//     if (num > 2004) {
-//       Alert.alert("Something");
-//       setNum(null)
-//       console.log("error")
-//     } else  {
-//       setNum(num)
-//     }
-//   }
+//   const height = useWindowDimensions().height;
 
+//   useEffect(() => {
+//     // console.log("API", query);
+//     fetchFilteredChars();
+//   }, [query]);
+
+//   const fetchFilteredChars = () => {
+//     fetch(`https://rickandmortyapi.com/api/character/?name=${query}`)
+//       .then((response) => response.json())
+//       .then((res) => {
+//         setData(res.results);
+//       })
+//       .finally(() => {
+//         setLoading(false);
+//       });
+//   };
+
+//   // const search = (query) => {
+//   //   // const item.name = name
+//   //   let text = query.toLowerCase();
+//   //   let chars = data
+//   //   let filteredChar = chars.filter((item) => {
+//   //     return item.name.toLowerCase().match(text)
+//   //   })
+
+//   //   if (!text || text === "") {
+//   //     setData(data)
+//   //     } else if ()
+//   //   return false;
+//   // };
+
+// const renderRow = ({ item }) => {
 //   return (
+//     <Card
+//       display={item.image}
+//       name={item.name}
+//       species={item.species}
+//       gender={item.gender}
+//       status={item.status}
+//       location={item.location?.name}
+//       origin={item.origin?.name}
+//       episodes={`${item.episode?.length}`}
+//     />
+//   );
+// };
+
+//   const handleSearch = (query) => {
+//     // console.log("text", query);
+//     setQuery(query);
+
+//     let filteredData = data.filter(function (item) {
+//       return item.name.includes(query);
+//     });
+
+//     setFilteredData(filteredData);
+//   };
+
+//   // const handleLoadMore = () => {
+//   //   setPage(page + 1);
+//   //   // console.log(page);
+//   // };
+
+//   const prevPage = () => {
+//     setPage(page - 1);
+//     // console.log(page);
+//   };
+
+//   const nextPage = () => {
+//     setPage(page + 1);
+//     // console.log(page);
+//   };
+
+//   return loading ? (
+//     <View style={styles.loading}>
+//       <ActivityIndicator size="large" color={"white"} />
+//     </View>
+//   ) : (
 //     <View style={styles.container}>
-//       <TextInput
-//       style={{width: 100, backgroundColor: "#059321"}}
-//       value={num}
-//       maxLength={4}
-//       onChangeText={changeHandler}
+//       <StatusBar barStyle={"light-content"} />
+
+//       <View style={styles.searchWrapper}>
+//         <TextInput
+//           style={styles.searchfield}
+//           placeholder="Enter name"
+//           onChangeText={handleSearch}
+//           value={query}
+//         />
+//       </View>
+
+//       <FlatList
+//         data={filteredData && filteredData.length > 0 ? filteredData : data}
+//         keyExtractor={(item, index) => index.toString()}
+//         renderItem={renderRow}
+//         // onEndReached={handleLoadMore}
+//         // onEndReachedThreshold={0}
+//         // ListFooterComponent={() => (
+//         //   <View style={{ marginTop: 10, alignItems: "center" }}>
+//         //     <ActivityIndicator size={24} color={colors.yellow} />
+//         //   </View>
+//         // )}
 //       />
+
+//       <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+//         <Pressable
+//           style={{
+//             alignItems: "center",
+//             justifyContent: "center",
+//             height: 40,
+//             width: 40,
+//             borderRadius: 10,
+//             marginRight: 40,
+//             backgroundColor: colors.yellow,
+//           }}
+//           onPress={prevPage}
+//         >
+//           <Text style={{ color: colors.white }}>Back</Text>
+//         </Pressable>
+//         <Pressable
+//           style={{
+//             alignItems: "center",
+//             justifyContent: "center",
+//             height: 40,
+//             width: 40,
+//             borderRadius: 10,
+//             backgroundColor: colors.primary,
+//           }}
+//           onPress={nextPage}
+//         >
+//           <Text style={{ color: colors.white }}>Next</Text>
+//         </Pressable>
+//       </View>
 //     </View>
 //   );
 // };
 
-// // define your styles
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//   },
-// });
-
-// //make this component available to the app
 // export default App;
+
+export default function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchChars();
+  }, []);
+
+  const fetchChars = () => {
+    fetch("https://rickandmortyapi.com/api/character/?page=2")
+      .then((response) => response.json())
+      // .then((res) => setData([...data, ...res.results]))
+      .then((res) => {
+        setData(res.results);
+        // console.log(data);
+      });
+  };
+
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#333",
+      }}
+    >
+      <View style={styles.container}>
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Card
+              display={item.image}
+              name={item.name}
+              species={item.species}
+              gender={item.gender}
+              status={item.status}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          windowSize={3}
+          maxToRenderPerBatch={5}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}

@@ -10,9 +10,9 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
-    "custom-country-code-picker-modal": "file:../newrx/custom-country-code-picker-modal/",
     "expo": "~43.0.2",
     "expo-status-bar": "~1.1.0",
+    "lodash": "^4.17.21",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
@@ -22,7 +22,13 @@
     "react-native-web": "0.17.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "@babel/eslint-parser": "^7.16.5",
+    "@react-native-community/eslint-config": "^3.0.1",
+    "eslint": "^8.6.0",
+    "eslint-plugin-flowtype": "^8.0.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1"
   },
   "private": true
 }
