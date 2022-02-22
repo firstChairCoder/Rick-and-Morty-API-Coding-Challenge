@@ -29,7 +29,12 @@ This is a list of things I would like to improve or change over time and helps w
 - [ ] Sticky header with slight animations.
 - [ ] Convert the app to TypeScript
 - [ ] Open another branch to use the GraphQL API instead for educational purposes.
-- [ ] Set up CI to run linting (__done__) and tests (both unit and integration) on PRs
+- [ ] Set up CI to run linting (__done__) and tests (both unit and integration) on PRs.
+- [ ] Snapshots for Readme.
+
+### Stack
+
+React Native, JS, Fetch API, React Navigation 5.
 
 
 ### Available scripts
