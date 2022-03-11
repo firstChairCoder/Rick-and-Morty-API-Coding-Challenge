@@ -1,6 +1,8 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "eslint-config-react-native-wcandillon/tsconfig.base",
   "compilerOptions": {
     "strict": true
+    // "esModuleInterop": true,
+    // "allowSyntheticDefaultImports": true
   }
 }
