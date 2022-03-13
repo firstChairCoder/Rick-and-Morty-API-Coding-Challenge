@@ -11,7 +11,7 @@ export type episodesNativeStackNavigatorParams = {
 };
 export type charactersNativeStackNavigatorParams = {
   AllCharacters: undefined;
-  Character: { id: string; name: string };
+  Character: { id: string; name: string; species: string };
 };
 
 export type bottomTabNavigatorParams = {

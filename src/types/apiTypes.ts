@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export interface getEpisodesQueryType {
   episodes: {
     info: dataInfoType;
@@ -15,7 +16,7 @@ export interface getSingleEpisodeType {
   episode: {
     id: string;
     name: string;
-    airDate: string;
+    air_date: string;
     characters: charactersItemType[];
   };
 }
@@ -47,4 +48,5 @@ export interface charactersItemType {
   id: string;
   name: string;
   image: string;
+  species: string;
 }

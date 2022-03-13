@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 
 export const getEpisodesQuery = gql`
   query getEpisodesQuery($page: Int!, $name: String) {
@@ -22,7 +22,7 @@ export const getSingleEpisodeQuery = gql`
     episode(id: $id) {
       id
       name
-      airDate
+      air_date
       characters {
         id
         name
@@ -44,6 +44,7 @@ export const getCharactersQuery = gql`
       results {
         name
         id
+        species
         image
       }
     }
