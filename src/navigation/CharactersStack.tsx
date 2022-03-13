@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { IconButton } from "react-native-paper";
 
 import { CharactersScreen } from "../screens/CharactersScreen";
@@ -12,8 +12,7 @@ const styles = StyleSheet.create({
   //   backgroundColor: charactersColor,
   // },
   headerTitle: {
-    flex: 1,
-    color: "white",
+    color: "black",
     fontSize: 20,
     fontWeight: "bold",
     textAlignVertical: "center",
@@ -31,36 +30,40 @@ const CharStack =
 
 const CharactersStack = () => {
   return (
-    <CharStack.Navigator>
-      <CharStack.Screen
-        name={"AllCharacters"}
-        component={CharactersScreen}
-        options={{
-          title: "Characters",
-          headerLeft: () => null,
-        }}
-      />
-      <CharStack.Screen
-        name={"Character"}
-        component={SingleCharacterScreen}
-        options={({ route, navigation }) => ({
-          headerTitle: () => (
-            <Text style={styles.headerTitle}>{route.params.name}</Text>
-          ),
-          headerLeft: () => (
-            <IconButton
-              testID="goToInitScreen"
-              icon="chevron-left"
-              size={32}
-              color="white"
-              onPress={() => {
-                navigation.navigate("AllCharacters");
-              }}
-            />
-          ),
-        })}
-      />
-    </CharStack.Navigator>
+    // Workaround around screen not rendering ---
+    //github.com/software-mansion/react-native-screens/issues/1197/#issuecomment-993682256
+    <View style={{ flex: 1 }} collapsable={false}>
+      <CharStack.Navigator>
+        <CharStack.Screen
+          name={"AllCharacters"}
+          component={CharactersScreen}
+          options={{
+            title: "All Characters",
+            headerLeft: () => null,
+          }}
+        />
+        <CharStack.Screen
+          name={"Character"}
+          component={SingleCharacterScreen}
+          options={({ route, navigation }) => ({
+            headerTitle: () => (
+              <Text style={styles.headerTitle}>{route.params.name}</Text>
+            ),
+            headerLeft: () => (
+              <IconButton
+                testID="goToInitScreen"
+                icon="chevron-left"
+                size={32}
+                color="white"
+                onPress={() => {
+                  navigation.navigate("AllCharacters");
+                }}
+              />
+            ),
+          })}
+        />
+      </CharStack.Navigator>
+    </View>
   );
 };
 
