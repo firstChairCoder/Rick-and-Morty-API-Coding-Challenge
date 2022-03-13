@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import React, { memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const EpisodesItem: React.FC<{ item: episodesItemType }> = ({ item }) => {
+const EpisodesItem: FC<{ item: episodesItemType }> = ({ item }) => {
   const navigation = useNavigation<bottomNavigationProp>();
 
   return (
