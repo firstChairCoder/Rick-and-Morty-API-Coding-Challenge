@@ -4,7 +4,6 @@ import { Image } from "react-native";
 
 import type { bottomTabNavigatorParams } from "../types/navigationTypes";
 import { charactersColor, episodesColor } from "../constants/themes";
-
 import EpisodesStack from "./EpisodesStack";
 import CharactersStack from "./CharactersStack";
 

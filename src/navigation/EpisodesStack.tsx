@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { Text, StyleSheet, View } from "react-native";
-import { IconButton } from "react-native-paper";
+import { StyleSheet, Text, View } from "react-native";
 
 import { episodesColor } from "../constants/themes";
 import { EpisodesScreen } from "../screens/EpisodesScreen";
@@ -17,14 +16,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontWeight: "bold",
-    textAlignVertical: "center",
+    alignSelf: "center",
   },
-  //   backButton: {
-  //     height: 50,
-  //     width: 50,
-  //     tintColor: "white",
-  //     alignSelf: "center",
-  //   },
 });
 
 const EpiStack =
@@ -52,20 +45,13 @@ const EpisodesStack = () => {
         <EpiStack.Screen
           name={"Episode"}
           component={SingleEpisodeScreen}
-          options={({ route, navigation }) => ({
+          options={({ route }) => ({
             headerTitle: () => (
-              <Text style={styles.headerTitle}>Episode {route.params.id}</Text>
-            ),
-            headerLeft: () => (
-              <IconButton
-                testID="goToInitScreen"
-                icon="chevron-left"
-                size={32}
-                color="#FFF"
-                onPress={() => {
-                  navigation.navigate("Main");
-                }}
-              />
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Text style={styles.headerTitle}>
+                  Episode {route.params.id}
+                </Text>
+              </View>
             ),
           })}
         />

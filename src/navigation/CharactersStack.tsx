@@ -11,12 +11,12 @@ const styles = StyleSheet.create({
   // charactersHeader: {
   //   backgroundColor: charactersColor,
   // },
-  headerTitle: {
-    color: "black",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlignVertical: "center",
-  },
+  // headerTitle: {
+  //   color: "black",
+  //   fontSize: 20,
+  //   fontWeight: "bold",
+  //   textAlignVertical: "center",
+  // },
   // backButton: {
   //   height: 50,
   //   width: 50,
@@ -39,28 +39,27 @@ const CharactersStack = () => {
           component={CharactersScreen}
           options={{
             title: "All Characters",
-            headerLeft: () => null,
           }}
         />
         <CharStack.Screen
           name={"Character"}
           component={SingleCharacterScreen}
-          options={({ route, navigation }) => ({
-            headerTitle: () => (
-              <Text style={styles.headerTitle}>{route.params.name}</Text>
-            ),
-            headerLeft: () => (
-              <IconButton
-                testID="goToInitScreen"
-                icon="chevron-left"
-                size={32}
-                color="white"
-                onPress={() => {
-                  navigation.navigate("AllCharacters");
-                }}
-              />
-            ),
-          })}
+          // options={({ route, navigation }) => ({
+          //   headerTitle: () => (
+          //     <Text style={styles.headerTitle}>{route.params.name}</Text>
+          //   ),
+          // headerLeft: () => (
+          //   <IconButton
+          //     testID="goToInitScreen"
+          //     icon="chevron-left"
+          //     size={32}
+          //     color="white"
+          //     onPress={() => {
+          //       navigation.navigate("AllCharacters");
+          //     }}
+          //   />
+          // ),
+          // })}
         />
       </CharStack.Navigator>
     </View>
