@@ -3,9 +3,24 @@
     "rules": {
       "@typescript-eslint/no-non-null-assertion": "off",
       "import/no-default-export": "off",
+      "import/order": [
+        1,
+        {
+          "groups": [
+            "builtin", "external", "internal",
+            ["parent", "sibling", "index"]
+          ],
+          "newlines-between": "always"
+        }
+      ],
       "arrow-body-style": "off",
       "react-hooks/exhaustive-deps": "off",
       "prefer-arrow-callback": "off",
+      "sort-imports": 
+    ["error", {
+      "ignoreCase": true,
+      "ignoreDeclarationSort": true
+    }],
       "prettier/prettier": [
         "error",
         {

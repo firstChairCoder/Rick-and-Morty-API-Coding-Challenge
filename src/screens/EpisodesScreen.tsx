@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import type { NativeSyntheticEvent, NativeScrollEvent } from "react-native";
-import { Text, Keyboard, StyleSheet, View, ScrollView } from "react-native";
-import { TextInput, ActivityIndicator } from "react-native-paper";
+import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Searchbar,
+  Switch,
+  TouchableRipple,
+  useTheme,
+} from "react-native-paper";
 
 import { getEpisodesQuery } from "../api/apiQuery";
 import EpisodeItem from "../components/EpisodeItem";
 import { episodesColor, episodesTheme } from "../constants/themes";
 import type { episodesItemType, getEpisodesQueryType } from "../types/apiTypes";
+import { PreferencesContext } from "../../App";
 
 const styles = StyleSheet.create({
   container: {
@@ -30,11 +37,20 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
   },
+  searchbar: {
+    borderRadius: 20,
+    elevation: 1,
+    width: "90%",
+    alignSelf: "center",
+  },
 });
 
 const EpisodesList = () => {
   const [filterName, setFilterName] = useState<string>("");
   const [dataList, setDataList] = useState<episodesItemType[]>([]);
+
+  const theme = useTheme();
+  const { toggleTheme, isThemeDark } = useContext(PreferencesContext);
   const [getEpisodes, { loading, error, data }] = useLazyQuery<
     getEpisodesQueryType,
     { page?: number | null; name?: string }
@@ -68,26 +84,23 @@ const EpisodesList = () => {
 
   return (
     <>
-      <TextInput
+      <TouchableRipple onPress={() => toggleTheme()}>
+        <Switch
+          style={{ backgroundColor: theme.colors.accent }}
+          color={episodesColor}
+          value={isThemeDark}
+        />
+      </TouchableRipple>
+
+      <Searchbar
         testID="TextInput"
+        style={styles.searchbar}
         value={filterName}
         onChangeText={setFilterName}
-        label="Search episodes name..."
+        placeholder={"Search episodes..."}
         selectionColor={episodesColor}
         theme={episodesTheme}
-        right={
-          filterName && (
-            <TextInput.Icon
-              name={"close"}
-              testID="clearInputText"
-              color={episodesColor}
-              onPress={() => {
-                setFilterName("");
-                Keyboard.dismiss();
-              }}
-            />
-          )
-        }
+        clearIcon={"close-box"}
       />
 
       <ScrollView
@@ -95,8 +108,8 @@ const EpisodesList = () => {
         testID="ScrollView"
         onScroll={onScrollHandler}
       >
-        {dataList.map((item) => (
-          <EpisodeItem key={item.id} item={item} />
+        {dataList.map((item, index) => (
+          <EpisodeItem key={index} item={item} />
         ))}
 
         {loading && (

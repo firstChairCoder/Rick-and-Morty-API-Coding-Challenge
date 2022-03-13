@@ -97,8 +97,8 @@ const CharList = () => {
         style={styles.list}
         onScroll={onScrollHandler}
       >
-        {dataList.map((item) => (
-          <CharItem key={item.id} item={item} />
+        {dataList.map((item, index) => (
+          <CharItem key={index} item={item} />
         ))}
 
         {loading && (

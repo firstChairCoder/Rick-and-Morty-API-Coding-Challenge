@@ -61,7 +61,7 @@ const EpisodeContainer: React.FC<getSingleEpisodeType> = ({ episode }) => {
 
       <View style={styles.field}>
         <Text style={styles.fieldName}>AIR DATE</Text>
-        <Text style={styles.fieldVal}>{episode.airDate}</Text>
+        <Text style={styles.fieldVal}>{episode.air_date}</Text>
       </View>
 
       <View style={styles.field}>
@@ -83,7 +83,7 @@ export const SingleEpisodeScreen = () => {
     { variables: { id: route.params.id } }
   );
 
-  console.log(data?.episode);
+  // console.log(data?.episode);
 
   if (loading) {
     return (

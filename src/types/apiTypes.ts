@@ -49,4 +49,5 @@ export interface charactersItemType {
   name: string;
   image: string;
   species: string;
+  status: string;
 }
