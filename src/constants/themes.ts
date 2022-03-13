@@ -1,7 +1,7 @@
 import { DefaultTheme } from "react-native-paper";
 
-export const episodesColor = "rgb(250, 0, 0)";
-export const charactersColor = "rgb(0, 190, 0)";
+export const episodesColor = "rgb(8, 178, 201)";
+export const charactersColor = "rgb(128, 255, 49)";
 
 export const episodesTheme = {
   ...DefaultTheme,
