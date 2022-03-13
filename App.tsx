@@ -1,10 +1,9 @@
 import "react-native-gesture-handler";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-// import { Text, View } from "react-native";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
-import RootTab from "./src/navigation/index";
+import RootTab from "./src/navigation";
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
